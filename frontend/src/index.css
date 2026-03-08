@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Prompt', sans-serif; /* ฟอนต์สไตล์ Minimal อ่านง่าย */
+}
+
+body {
+  background-color: #ffffff; /* พื้นหลังสีขาวตามธีม */
+  color: #333333;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* คลาสสำหรับทำตัวหนังสือไล่สี น้ำเงิน -> แดง */
+.text-gradient {
+  background: linear-gradient(90deg, #1a499b 0%, #e31e24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* คลาสสำหรับทำปุ่มไล่สี น้ำเงิน -> แดง */
+.bg-gradient {
+  background: linear-gradient(90deg, #1a499b 0%, #e31e24 100%);
+  color: white;
+  transition: opacity 0.3s ease;
+}
+
+.bg-gradient:hover {
+  opacity: 0.85;
+}
+
+/* กล่อง Container ให้รองรับทุกขนาดหน้าจอ (Flexible) */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: calc(100vh - 80px); /* ให้เนื้อหาเต็มจอพอดี */
+}
+
+/* ---------------- Dropdown Menu ---------------- */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  padding: 10px 0; /* เพิ่มพื้นที่ให้ชี้เมาส์ง่ายขึ้น */
+}
+
+.dropdown-content {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 150%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  min-width: 220px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  z-index: 100;
+  transition: all 0.3s ease;
+  padding: 10px 0;
+  border: 1px solid #f0f0f0;
+}
+
+/* เอฟเฟกต์เวลาเอาเมาส์ชี้ */
+.dropdown:hover .dropdown-content {
+  visibility: visible;
+  opacity: 1;
+  top: 100%;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 12px 20px;
+  color: #555;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #1a499b; /* เปลี่ยนเป็นสีน้ำเงินธีมคุณ */
+  font-weight: 500;
+}

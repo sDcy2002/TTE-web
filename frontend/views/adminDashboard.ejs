@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<style>
+  @media print {
+    /* ซ่อน Navbar, Footer, และปุ่มสลับแท็บ ที่ไม่จำเป็นในการพิมพ์ */
+    #navbar, footer, .admin-tabs, button { display: none !important; }
+    
+    /* ตั้งค่าหน้ากระดาษให้เป็นพื้นขาว-ตัวอักษรดำ เสมอ */
+    body, .page-container { 
+      background-color: #fff !important; color: #000 !important; 
+      margin: 0 !important; padding: 0 !important; max-width: 100% !important; 
+    }
+    
+    /* ลบเงากล่องและจัดตารางใหม่ */
+    div { box-shadow: none !important; }
+    table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #000 !important; }
+    th, td { border: 1px solid #000 !important; padding: 10px !important; color: #000 !important; background-color: #fff !important; }
+    
+    /* ลบพวกอิโมจิในหัวข้อ */
+    h2 { color: #000 !important; margin-top: 0 !important; }
+  }
+</style>
+
+<div class="page-container" style="max-width:1200px; margin:0 auto;">
+  </div>
+
+<%- include('partials/footer') %>
+
+<script src="/js/adminDashboard.js"></script>

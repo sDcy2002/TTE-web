@@ -14,10 +14,12 @@ async function initDB(){
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20);');
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT;');
     
+    // ---> เพิ่มคอลัมน์ role โดยให้ทุกคนที่สมัครใหม่มีค่าเริ่มต้นเป็น 'user' <---
+    await pool.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user';");
+
     await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS userid INT REFERENCES users(id);');
     await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS ordercode VARCHAR(50);');
     await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS items JSONB;');
-    // ---> เพิ่มคอลัมน์เก็บที่อยู่จัดส่งของออเดอร์นั้นๆ <---
     await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS shippingaddress TEXT;');
 
     await pool.query('ALTER TABLE products ADD COLUMN IF NOT EXISTS description TEXT;');

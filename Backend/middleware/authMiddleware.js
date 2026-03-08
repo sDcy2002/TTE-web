@@ -1,27 +1,23 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
-module.exports = (req,res,next)=>{
+const auth = (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) {
+    return res.status(401).json({ message: "ไม่มี Token อนุญาตให้เข้าถึง" });
+  }
 
-const token = req.headers.authorization
+  try {
+    const actualToken = token.startsWith('Bearer ') ? token.slice(7, token.length) : token;
+    
+    // ถอดรหัส Token (ควรใช้รหัสลับให้ตรงกับตอนสร้าง Token)
+    const decoded = jwt.verify(actualToken, process.env.JWT_SECRET || 'your_secret_key');
+    
+    // แนบข้อมูลผู้ใช้ (id, username, role) เข้าไปใน req.user
+    req.user = decoded; 
+    next();
+  } catch (err) {
+    res.status(401).json({ message: "Token ไม่ถูกต้อง หรือหมดอายุแล้ว" });
+  }
+};
 
-if(!token)
-return res.status(403).json({message:"no token"})
-
-try{
-
-const decoded = jwt.verify(
-token.split(" ")[1],
-process.env.JWT_SECRET || "secret"
-)
-
-req.user = decoded
-
-next()
-
-}catch(err){
-
-res.status(401).json({message:"invalid token"})
-
-}
-
-}
+module.exports = auth;

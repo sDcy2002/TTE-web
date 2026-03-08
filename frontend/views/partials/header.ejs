@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTE-STORE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <style>
+    body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
+    
+    /* กล่องข้อความ พื้นหลัง และตาราง */
+    body.dark-mode nav, body.dark-mode footer, body.dark-mode .category-sidebar, body.dark-mode .product-card,
+    body.dark-mode [style*="background-color:#fff"], body.dark-mode [style*="background-color: #fff"],
+    body.dark-mode [style*="background-color:#f9f9f9"], body.dark-mode [style*="background-color:#f8fafc"],
+    body.dark-mode [style*="background-color: rgb(255, 255, 255)"] {
+      background-color: #1e1e1e !important; color: #e0e0e0 !important; border-color: #333 !important;
+    }
+    
+    body.dark-mode input, body.dark-mode textarea {
+      background-color: #2c2c2c !important; color: #fff !important; border-color: #555 !important;
+    }
+    
+    body.dark-mode table, body.dark-mode th, body.dark-mode td, body.dark-mode tr {
+      border-color: #444 !important; color: #e0e0e0 !important;
+    }
+    
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode strong {
+      color: #fff !important;
+    }
+
+    /* 🌟 ปรับสีราคาสินค้าให้เด่นชัด (สีเหลืองทอง) ในโหมดมืด */
+    body.dark-mode .product-price {
+      color: #facc15 !important; 
+    }
+
+    /* 🌟 เปลี่ยนข้อความสีน้ำเงินเข้ม ให้เป็นสีฟ้าสว่างแทนในโหมดมืด */
+    body.dark-mode [style*="color:#1a499b"], 
+    body.dark-mode [style*="color: #1a499b"] {
+      color: #60a5fa !important;
+    }
+
+    /* 🌟 เปลี่ยนข้อความสีแดงเข้ม ให้เป็นสีแดงพาสเทลสว่างในโหมดมืด (พวกยอดรวม/สถานะ) */
+    body.dark-mode [style*="color:#e31e24"], 
+    body.dark-mode [style*="color: #e31e24"] {
+      color: #f87171 !important;
+    }
+  </style>
+</head>
+<body class="">
+
+<script>
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+</script>
+
+<nav id="navbar" style="
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 5%; 
+  background-color: #fff;
+  color: #333;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+">
+  <a href="/" id="logo" class="text-gradient" style="text-decoration: none; font-size: 28px; font-weight: bold; letter-spacing: 1px;">
+    TTE-STORE <span id="admin-tag" style="font-size:16px;color:#facc15;display:none;">(ADMIN MODE)</span>
+  </a>
+  
+  <div id="nav-links" style="display:flex; gap:35px; align-items:center;">
+    </div>
+  
+  <div id="user-area" style="display:flex; align-items:center; gap:25px;">
+    </div>
+</nav>
+
+<script>
+function updateNavbar() {
+  const role = localStorage.getItem('role') || 'user';
+  const user = localStorage.getItem('username');
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  document.getElementById('admin-tag').style.display = role === 'admin' ? 'inline' : 'none';
+
+  // 1. เมนูฝั่งซ้าย
+  const navLinks = document.getElementById('nav-links');
+  if (role === 'user') {
+    navLinks.innerHTML = `
+      <a href="/" style="color:inherit;text-decoration:none;font-weight:600;font-size:18px;transition:0.2s;">Home</a>
+      <a href="/products" style="color:inherit;text-decoration:none;font-weight:600;font-size:18px;transition:0.2s;">Products</a>
+    `;
+  } else if (role === 'admin') {
+    navLinks.innerHTML = `
+      <a href="/" style="color:#cbd5e1;text-decoration:none;font-weight:600;font-size:18px;">หน้าแรก</a>
+      <a href="/admin/dashboard" style="color:#cbd5e1;text-decoration:none;font-weight:600;font-size:18px;">จัดการระบบ</a>
+    `;
+    if (!document.body.classList.contains('dark-mode')) {
+      document.getElementById('navbar').style.backgroundColor = '#0f172a';
+    }
+  }
+
+  // 2. เมนูฝั่งขวา (เพิ่มปุ่ม Toggle Dark Mode)
+  const userArea = document.getElementById('user-area');
+  const isDark = document.body.classList.contains('dark-mode');
+  const themeBtn = `<button id="theme-toggle" style="background:none; border:none; font-size:24px; cursor:pointer; padding: 0;" title="สลับโหมดมืด/สว่าง">${isDark ? '☀️' : '🌙'}</button>`;
+  
+  let cartIconHtml = '';
+  if (role === 'user') {
+    const badgeHtml = cartCount > 0 
+      ? `<span style="position:absolute;top:-5px;right:-10px;background-color:#e31e24;color:white;font-size:12px;padding:2px 6px;border-radius:50px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${cartCount}</span>` : ''; 
+    cartIconHtml = `
+      <a href="/cart" style="color:inherit;text-decoration:none;position:relative;display:flex;align-items:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <span style="font-size:28px;">🛒</span>${badgeHtml}
+      </a>
+    `;
+  }
+
+  const divider = `<div style="width:1px; height:30px; background-color:#ddd; margin:0 5px;"></div>`;
+
+  if (user) {
+    userArea.innerHTML = `
+      ${themeBtn}
+      ${cartIconHtml}
+      ${divider}
+      <a href="/profile" style="color:${role==='admin' && !isDark ?'#fff':'#666'};text-decoration:none;font-size:16px;">สวัสดี, <strong style="font-size:18px;">${user}</strong></a>
+      <button id="logout-btn" style="padding:10px 25px;cursor:pointer;background-color:transparent;color:#e31e24;border:2px solid #e31e24;border-radius:50px;font-size:16px;font-weight:bold;transition:0.2s;">Logout</button>
+    `;
+    
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = '/';
+    });
+  } else {
+    userArea.innerHTML = `
+      ${themeBtn}
+      ${cartIconHtml}
+      ${divider}
+      <a href="/register" class="bg-gradient" style="text-decoration:none;padding:12px 30px;border-radius:50px;color:#fff;font-weight:bold;font-size:16px;box-shadow:0 4px 10px rgba(26, 73, 155, 0.3);">Login / Register</a>
+    `;
+  }
+
+  // ฟังก์ชันทำงานสลับ Dark Mode
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const darkNow = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', darkNow ? 'dark' : 'light');
+    document.getElementById('theme-toggle').innerText = darkNow ? '☀️' : '🌙';
+    
+    if(role === 'admin') {
+      document.getElementById('navbar').style.backgroundColor = darkNow ? '#1e1e1e' : '#0f172a';
+    } else {
+      document.getElementById('navbar').style.backgroundColor = darkNow ? '#1e1e1e' : '#fff';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', updateNavbar);
+window.addEventListener('cartUpdated', updateNavbar);
+</script>

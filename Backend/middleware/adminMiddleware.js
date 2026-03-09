@@ -4,9 +4,8 @@ const adminAuth = (req, res, next) => {
     return res.status(401).json({ message: "กรุณาเข้าสู่ระบบก่อน" });
   }
 
-  // ตรวจสอบสิทธิ์ว่าใช่ admin หรือไม่
   if (req.user.role === 'admin') {
-    next(); // ให้ผ่านไปทำคำสั่งถัดไปได้ (เช่น ลบสินค้า, เพิ่มสินค้า)
+    next();
   } else {
     res.status(403).json({ message: "ปฏิเสธการเข้าถึง! พื้นที่นี้สำหรับผู้ดูแลระบบเท่านั้น" });
   }

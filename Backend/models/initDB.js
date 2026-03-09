@@ -1,11 +1,37 @@
 const pool = require('../config/db')
 
 async function initDB(){
-  await pool.query(`CREATE TABLE IF NOT EXISTS categories(id SERIAL PRIMARY KEY, categoryName VARCHAR(100), description TEXT)`)
-  await pool.query(`CREATE TABLE IF NOT EXISTS products(id SERIAL PRIMARY KEY, productCode VARCHAR(50), productName VARCHAR(100), description TEXT, imageUrl TEXT, price NUMERIC, stockQuantity INT, categoryId INT REFERENCES categories(id))`)
-  await pool.query(`CREATE TABLE IF NOT EXISTS customers(id SERIAL PRIMARY KEY, customerCode VARCHAR(50), firstName VARCHAR(100), lastName VARCHAR(100), email VARCHAR(100), phone VARCHAR(20))`)
-  await pool.query(`CREATE TABLE IF NOT EXISTS orders(id SERIAL PRIMARY KEY, orderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP, totalAmount NUMERIC, status VARCHAR(50), customerId INT REFERENCES customers(id), productId INT REFERENCES products(id))`)
-  await pool.query(`CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, username VARCHAR(50), password VARCHAR(255))`)
+  await pool.query(`CREATE TABLE IF NOT EXISTS categories(
+    id SERIAL PRIMARY KEY, 
+    categoryName VARCHAR(100), 
+    description TEXT)`)
+  await pool.query(`CREATE TABLE IF NOT EXISTS products(
+    id SERIAL PRIMARY KEY, 
+    productCode VARCHAR(50), 
+    productName VARCHAR(100), 
+    description TEXT, 
+    imageUrl TEXT, 
+    price NUMERIC, 
+    stockQuantity INT, 
+    categoryId INT REFERENCES categories(id))`)
+  await pool.query(`CREATE TABLE IF NOT EXISTS customers(
+    id SERIAL PRIMARY KEY, 
+    customerCode VARCHAR(50), 
+    firstName VARCHAR(100), 
+    lastName VARCHAR(100), 
+    email VARCHAR(100), 
+    phone VARCHAR(20))`)
+  await pool.query(`CREATE TABLE IF NOT EXISTS orders(
+    id SERIAL PRIMARY KEY, 
+    orderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    totalAmount NUMERIC, 
+    status VARCHAR(50), 
+    customerId INT REFERENCES customers(id), 
+    productId INT REFERENCES products(id))`)
+  await pool.query(`CREATE TABLE IF NOT EXISTS users(
+    id SERIAL PRIMARY KEY, 
+    username VARCHAR(50), 
+    password VARCHAR(255))`)
 
   try {
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS firstname VARCHAR(100);');
